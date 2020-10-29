@@ -8,7 +8,6 @@ var PORT = process.env.PORT || 3000;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-
 var app = express();
 var cors = require('cors');
 app.use(cors());
