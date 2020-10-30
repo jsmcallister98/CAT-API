@@ -176,7 +176,7 @@ router.post("/votes", function(req, res) {
   let newVote = req.body
   Vote.create(newVote)
     .then(function(vote) {
-      return Cat.findOneAndUpdate({ id: imageID }, { value: newVote.value}, { url: Url }, { new: true});
+      Cat.findOneAndUpdate({ id: imageID }, { value: newVote.value}, { url: Url }, { new: true});
     })
     .then(function(newCat) {
       res.json(newCat);
