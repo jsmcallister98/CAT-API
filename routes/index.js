@@ -139,12 +139,14 @@ const cats = [
 
 const voteSchema = new Schema ({
   image_id: String,
-  value: Number
+  value: Number,
+  url: String
 });
 
 const Vote = mongoose.model("Vote", voteSchema);
 
 let imageID 
+let Url
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -152,6 +154,7 @@ router.get('/', function(req, res) {
   Cat.findOne( {num_id: randomNum} )
     .then((response) => {
       imageID = response.id
+      Url = response.url
       res.json(response);
     })
     .catch((error) => {
@@ -173,7 +176,7 @@ router.post("/votes", function(req, res) {
   let newVote = req.body
   Vote.create(newVote)
     .then(function(vote) {
-      return Cat.findOneAndUpdate({ id: imageID }, { value: newVote.value}, { new: true});
+      return Cat.findOneAndUpdate({ id: imageID }, { value: newVote.value}, { url: Url }, { new: true});
     })
     .then(function(newCat) {
       res.json(newCat);
