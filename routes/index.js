@@ -17,7 +17,8 @@ const Schema = mongoose.Schema;
 const CatSchema = new Schema ({
   url: String,
   id: String,
-  num_id: Number
+  num_id: Number,
+  value: Number
 });
 
 const Cat = mongoose.model("Cat", CatSchema);
@@ -72,7 +73,57 @@ const cats = [
     url: 'https://cdn2.thecatapi.com/images/EzYYrmFp7.jpg',
     id: 'EzYYrmFp7',
     num_id: 10
-  }
+  },
+  {
+    url: 'https://cdn2.thecatapi.com/images/aoh.jpg',
+    id: 'aoh',
+    num_id: 11
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/967.jpg',
+    id: '967',
+    num_id: 12
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/368.jpg',
+    id: '368',
+    num_id: 13
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/a2m.jpg',
+    id: 'a2m',
+    num_id: 14
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/MTk0MTcyOQ.jpg',
+    id: 'MTk0MTcyOQ',
+    num_id: 15
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/385.jpg',
+    id: '385',
+    num_id: 16
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/MTU1ODQwOA.jpg',
+    id: 'MTU1ODQwOA',
+    num_id: 17
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/bje.jpg',
+    id: 'bje',
+    num_id: 18
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/ck6.jpg',
+    id: 'ck6',
+    num_id: 19
+  }, 
+  {
+    url: 'https://cdn2.thecatapi.com/images/2L1IcPUaa.jpg',
+    id: '2L1IcPUaa',
+    num_id: 20
+  } 
 ]
 
 // cats.forEach(function(cat) {
@@ -86,16 +137,51 @@ const cats = [
 //   });
 // });
 
+const voteSchema = new Schema ({
+  image_id: String,
+  value: Number
+});
+
+const Vote = mongoose.model("Vote", voteSchema);
+
+let imageID 
+
 /* GET home page. */
 router.get('/', function(req, res) {
   randomNum = Math.floor(Math.random() * cats.length);
   Cat.findOne( {num_id: randomNum} )
     .then((response) => {
+      imageID = response.id
       res.json(response);
     })
     .catch((error) => {
-      console.log('error')
-    })
+      console.log('error');
+    });
 });
+
+router.get("/votes", function(req, res) {
+  Vote.find({})
+    .then((vote) => {
+      res.json(vote);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+router.post("/votes", function(req, res) {
+  let newVote = req.body
+  Vote.create(newVote)
+    .then(function(vote) {
+      return Cat.findOneAndUpdate({ id: imageID }, { value: newVote.value}, { new: true});
+    })
+    .then(function(newCat) {
+      res.json(newCat);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+});
+
 
 module.exports = router;
